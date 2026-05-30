@@ -16,7 +16,7 @@ if st.button("요약 및 퀴즈 생성하기"):
     else:
         MY_API_KEY = st.secrets["MY_API_KEY"]
         genai.configure(api_key=MY_API_KEY)
-        model = genai.GenerativeModel('gemini-2.0-flash')
+        model = genai.GenerativeModel('gemini-1.5-flash')
         
         prompt = f"""
         학생이 입력한 아래의 강의 필기 내용을 바탕으로 다음을 수행해 주세요:
@@ -43,7 +43,7 @@ if st.session_state.quiz_content:
         else:
             MY_API_KEY = st.secrets["MY_API_KEY"]
             genai.configure(api_key=MY_API_KEY)
-            model = genai.GenerativeModel('gemini-2.0-flash')
+            model = genai.GenerativeModel('gemini-1.5-flash')
             
             grading_prompt = f"""
             당신은 듀오링고의 마스코트 부엉이처럼, 학생이 문제를 틀리면 엄청나게 실망하고 화를 내는 콘셉트의 튜터입니다.
