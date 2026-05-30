@@ -17,8 +17,10 @@ if st.button("요약 및 퀴즈 생성하기"):
         MY_API_KEY = st.secrets["MY_API_KEY"]
         genai.configure(api_key=MY_API_KEY)
         
-        # 서버가 헷갈리지 않도록 -latest 꼬리표를 명시합니다.
-        model = genai.GenerativeModel('gemini-1.5-flash-latest')
+        # 내 API 키가 사용할 수 있는 모델 중 텍스트 생성이 가능한 첫 번째 모델을 자동으로 찾아 연결합니다.
+        available_models = [m.name for m in genai.list_models() if 'generateContent' in m.supported_generation_methods]
+        auto_selected_model = available_models[0]
+        model = genai.GenerativeModel(auto_selected_model)
         
         prompt = f"""
         학생이 입력한 아래의 강의 필기 내용을 바탕으로 다음을 수행해 주세요:
@@ -29,7 +31,7 @@ if st.button("요약 및 퀴즈 생성하기"):
         {lecture_notes}
         """
         
-        with st.spinner("부엉이가 퀴즈를 출제하는 중입니다..."):
+        with st.spinner(f"부엉이가 퀴즈를 출제하는 중입니다... (연결된 모델: {auto_selected_model})"):
             response = model.generate_content(prompt)
             st.session_state.quiz_content = response.text
 
@@ -46,8 +48,10 @@ if st.session_state.quiz_content:
             MY_API_KEY = st.secrets["MY_API_KEY"]
             genai.configure(api_key=MY_API_KEY)
             
-            # 채점 부분도 동일하게 -latest 꼬리표를 명시합니다.
-            model = genai.GenerativeModel('gemini-1.5-flash-latest')
+            # 채점할 때도 자동으로 살아있는 모델을 찾아 연결합니다.
+            available_models = [m.name for m in genai.list_models() if 'generateContent' in m.supported_generation_methods]
+            auto_selected_model = available_models[0]
+            model = genai.GenerativeModel(auto_selected_model)
             
             grading_prompt = f"""
             당신은 듀오링고의 마스코트 부엉이처럼, 학생이 문제를 틀리면 엄청나게 실망하고 화를 내는 콘셉트의 튜터입니다.
@@ -63,7 +67,7 @@ if st.session_state.quiz_content:
             {user_answer}
             """
             
-            with st.spinner("부엉이가 매의 눈으로 채점 중입니다..."):
+            with st.spinner(f"부엉이가 매의 눈으로 채점 중입니다... (연결된 모델: {auto_selected_model})"):
                 grading_response = model.generate_content(grading_prompt)
                 st.markdown("### 🦉 부엉이의 채점 결과")
                 st.write(grading_response.text)
