@@ -55,7 +55,7 @@ if st.session_state.quiz_content:
             st.warning("정답을 입력해야 채점할 수 있습니다!")
         else:
             genai.configure(api_key=api_key)
-            model = genai.GenerativeModel('gemini-1.5-flash')
+            model = genai.GenerativeModel('gemini-2.5-flash')
             
             grading_prompt = f"""
             당신은 듀오링고의 마스코트 부엉이처럼, 학생이 문제를 틀리면 엄청나게 실망하고 화를 내는 콘셉트의 튜터입니다.
